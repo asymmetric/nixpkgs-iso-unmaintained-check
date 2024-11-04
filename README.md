@@ -16,9 +16,16 @@ NIX_PATH=nixpkgs=/foo/bar/baz ./check.sh
 
 ## How it works
 
-- Gets list of **store paths** in build and runtime closure for the minimal ISO
+- Gets list of **store paths** in the build and runtime closures for the minimal ISO
 - Tries to match those against the list of unmaintained **packages** in Nixpkgs
 
-NB: because Nix has no notion of packages, we have to apply some **fuzzy matching** here.
+Note that, because Nix has no notion of packages, we have to apply some **fuzzy matching** here.
 
-Therefore, the list is only a lower bound.
+Given something like `/nix/store/asdf-foo-123.drv`, the program:
+- removes `/nix/store/asdf-`
+- removes `.drv`
+- removes `-123`
+
+To end up with `foo`, which is hopefully also the package name, as returned by `nix-env -qa`.
+
+Given this limitation, the list should only be interpreted as a first approximation, and a lower bound on the number of unmaintained packages.
