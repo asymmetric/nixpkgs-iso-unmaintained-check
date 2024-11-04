@@ -29,3 +29,8 @@ Given something like `/nix/store/asdf-foo-123.drv`, the program:
 To end up with `foo`, which is hopefully also the package name, as returned by `nix-env -qa`.
 
 Given this and other limitations, the list should only be interpreted as a first approximation.
+
+## TODO
+
+- remove hooks
+- remove wrappers
