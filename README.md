@@ -8,6 +8,12 @@ Checks which packages are unmaintained in the NixOS minimal ISO.
 ./iso-unmaintained.sh -h
 ```
 
+This script relies on the value of `<nixpkgs>`, so you can use the `NIX_PATH` variable to set that to a value of your choosing:
+
+```
+NIX_PATH=nixpkgs=/foo/bar/baz ./iso-unmaintained.sh
+```
+
 ## How it works
 
 - Gets list of **store paths** in build and runtime closure for the minimal ISO
