@@ -19,7 +19,7 @@ NIX_PATH=nixpkgs=/foo/bar/baz ./check.sh
 - Gets list of **store paths** in the build and runtime closures for the minimal ISO
 - Tries to match those against the list of unmaintained **packages** in Nixpkgs
 
-Note that, because Nix has no notion of packages, we have to apply some **fuzzy matching** here.
+Note that, because Nix has no notion of packages, we have to be "creative" in matching store paths to packages.
 
 Given something like `/nix/store/asdf-foo-123.drv`, the program:
 - removes `/nix/store/asdf-`
