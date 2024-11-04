@@ -60,7 +60,8 @@ process() {
 
 trap "cleanup; exit 1" SIGINT
 
-iso_drv=$(nix-instantiate --quiet '<nixpkgs/nixos>' -A config.system.build.isoImage --arg configuration "{ imports = [ <nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix> ]; }")
+# need to call --quiet 3 times to stop nix-instantiate from complaining about missing --add-root, smh
+iso_drv=$(nix-instantiate --quiet --quiet --quiet '<nixpkgs/nixos>' -A config.system.build.isoImage --arg configuration "{ imports = [ <nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix> ]; }")
 
 declare build_deps runtime_deps
 
@@ -68,7 +69,6 @@ if [[ $BUILD_DEPS -eq 1 ]]; then
   build_deps=$(nix-store -qR $iso_drv | tee $TMPDIR/bld-pre | process | sort -u | tee $TMPDIR/bld)
 fi
 if [[ $RUNTIME_DEPS -eq 1 ]]; then
-  # need to call --quiet 3 times to stop nix-store from complaining about missing --add-root, smh
   runtime_deps=$(nix-store -qR $(nix-store -r --quiet --quiet --quiet --no-build-output $iso_drv) | tee $TMPDIR/run-pre | process | sort -u | tee $TMPDIR/run )
 fi
 
