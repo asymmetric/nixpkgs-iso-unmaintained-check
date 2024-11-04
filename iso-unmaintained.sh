@@ -62,9 +62,7 @@ trap "cleanup; exit 1" SIGINT
 
 iso_drv=$(nix-instantiate --quiet '<nixpkgs/nixos>' -A config.system.build.isoImage --arg configuration "{ imports = [ <nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix> ]; }")
 
-
-build_deps=""
-runtime_deps=""
+declare build_deps runtime_deps
 
 if [[ $BUILD_DEPS -eq 1 ]]; then
   build_deps=$(nix-store -qR $iso_drv | process | sort -u | tee $TMPDIR/bld)
