@@ -8,7 +8,7 @@ Checks which packages are unmaintained in the NixOS minimal ISO.
 ./check.sh -h
 ```
 
-This script relies on the value of `<nixpkgs>`, so you can use the `NIX_PATH` variable to set that to a value of your choosing:
+This script relies on the value of `<nixpkgs>`, so you can use the `NIX_PATH` variable to set it to a value of your choosing:
 
 ```
 NIX_PATH=nixpkgs=/foo/bar/baz ./check.sh
