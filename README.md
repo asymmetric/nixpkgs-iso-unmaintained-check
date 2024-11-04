@@ -19,6 +19,6 @@ NIX_PATH=nixpkgs=/foo/bar/baz ./check.sh
 - Gets list of **store paths** in build and runtime closure for the minimal ISO
 - Tries to match those against the list of unmaintained **packages** in Nixpkgs
 
-Note that because Nix has no notion of packages, we have to apply some fuzzy matching here.
+NB: because Nix has no notion of packages, we have to apply some **fuzzy matching** here.
 
 Therefore, the list is only a lower bound.
