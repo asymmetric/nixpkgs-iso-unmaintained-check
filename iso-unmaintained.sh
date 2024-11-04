@@ -7,7 +7,7 @@ BUILD_DEPS=1
 RUNTIME_DEPS=1
 
 usage() {
-  echo "Usage: $0 [--debug|-d] [--help|-h] [--no-build] [--no-runtime]"
+  echo "Usage: $0 [--debug|-d] [--help|-h] [--no-buildtime] [--no-runtime]"
 }
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -20,7 +20,7 @@ while [[ $# -gt 0 ]]; do
       usage
       exit 0
       ;;
-    --no-build)
+    --no-buildtime)
       BUILD_DEPS=0
       shift
       ;;
