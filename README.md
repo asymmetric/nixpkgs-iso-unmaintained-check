@@ -28,4 +28,4 @@ Given something like `/nix/store/asdf-foo-123.drv`, the program:
 
 To end up with `foo`, which is hopefully also the package name, as returned by `nix-env -qa`.
 
-Given this limitation, the list should only be interpreted as a first approximation, and a lower bound on the number of unmaintained packages.
+Given this and other limitations, the list should only be interpreted as a first approximation.
