@@ -14,6 +14,8 @@ This script relies on the value of `<nixpkgs>`, so you can use the `NIX_PATH` va
 NIX_PATH=nixpkgs=/foo/bar/baz ./check.sh
 ```
 
+If the `--debug` flag is set, the script will keep around the temporary directory where it saves intermediate files, for closer inspection.
+
 ## How it works
 
 - Gets list of **store paths** in the build and runtime closures for the minimal ISO
