@@ -1,5 +1,6 @@
 #!/usr/bin/env nix-shell
 #!nix-shell -i bash -p coreutils jq
+# shellcheck shell=bash
 
 set -euo pipefail
 
@@ -11,12 +12,13 @@ RUNTIME_DEPS=1
 usage() {
   echo "Usage: $0 [--debug|-d] [--help|-h] [--no-buildtime] [--no-runtime]"
 }
+
 while [[ $# -gt 0 ]]; do
   case $1 in
     --debug|-d)
       DEBUG=1
-      echo saving to $TMPDIR
-      echo nix_path is $NIX_PATH
+      echo saving to "$TMPDIR"
+      echo nix_path is "$NIX_PATH"
       shift;;
     --help|-h)
       usage
@@ -44,7 +46,7 @@ fi
 
 cleanup() {
   if [[ $DEBUG -eq 0 ]]; then
-    rm -rf $TMPDIR
+    rm -rf "$TMPDIR"
   fi
 }
 
@@ -55,11 +57,11 @@ cleanup() {
 # - removes -123
 process() {
   while IFS= read -r line; do
-    processed_line=$(echo $line | cut -d- -f2- | cut -d. -f1 | sed -E 's/-[0-9]+$//')
+    processed_line=$(echo "$line" | cut -d- -f2- | cut -d. -f1 | sed -E 's/-[0-9]+$//')
 
     # Do not print out "internal" packages
     if [[ ! "$processed_line" =~ -hook ]]; then
-      echo $processed_line
+      echo "$processed_line"
     fi
   done
 }
@@ -75,22 +77,22 @@ runtime_deps=""
 
 if [[ $BUILD_DEPS -eq 1 ]]; then
   echo "Getting build-time closure..." >&2
-  build_deps=$(nix-store -qR $drv | tee $TMPDIR/bld-pre | process | sort -u | tee $TMPDIR/bld)
+  build_deps=$(nix-store -qR "$drv" | tee "$TMPDIR"/bld-pre | process | sort -u | tee "$TMPDIR"/bld)
 fi
 if [[ $RUNTIME_DEPS -eq 1 ]]; then
   echo "Getting run-time closure..." >&2
-  runtime_deps=$(nix-store -qR $(nix-store -r --quiet --quiet --quiet --no-build-output $drv) | tee $TMPDIR/run-pre | process | sort -u | tee $TMPDIR/run )
+  runtime_deps=$(nix-store -qR "$(nix-store -r --quiet --quiet --quiet --no-build-output "$drv")" | tee "$TMPDIR"/run-pre | process | sort -u | tee "$TMPDIR"/run )
 fi
 
 
 # Convert store paths to package names (f1)
-cat <(echo "$build_deps") <(echo "$runtime_deps") | sort -u | tee $TMPDIR/combined  > $TMPDIR/f1
+cat <(echo "$build_deps") <(echo "$runtime_deps") | sort -u | tee "$TMPDIR"/combined  > "$TMPDIR"/f1
 
 # Find all unmaintained packages in nixpkgs (f2)
 echo "Getting list of unmaintained packages..." >&2
-nix-env -qa --json --meta --file '<nixpkgs>' 2>/dev/null | jq -r 'map_values(select(.meta.maintainers == null or .meta.maintainers == [])) | .[].pname' | sort -u > $TMPDIR/f2
+nix-env -qa --json --meta --file '<nixpkgs>' 2>/dev/null | jq -r 'map_values(select(.meta.maintainers == null or .meta.maintainers == [])) | .[].pname' | sort -u > "$TMPDIR"/f2
 
 # Print the intersection of f1 and f2, i.e. all unmaintained packages in the iso image's closure
-comm -12 $TMPDIR/f{1,2}
+comm -12 "$TMPDIR"/f{1,2}
 
 cleanup
