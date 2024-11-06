@@ -1,6 +1,6 @@
 # nixpkgs-iso-unmaintained-check
 
-Checks which packages are unmaintained in the NixOS minimal ISO.
+Checks which packages are unmaintained in the NixOS minimal ISO package for the host's `system`.
 
 ## Usage
 
@@ -15,6 +15,8 @@ NIX_PATH=nixpkgs=/foo/bar/baz ./check.sh
 ```
 
 If the `--debug` flag is set, the script will keep around the temporary directory where it saves intermediate files, for closer inspection.
+
+The script prints out what it's doing to stderr, whereas stdout is used only for the final output, which you can therefore easily pipe/redirect, as it won't contain any other information.
 
 ## How it works
 
