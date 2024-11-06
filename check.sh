@@ -80,7 +80,7 @@ fi
 cat <(echo "$build_deps") <(echo "$runtime_deps") | sort -u | tee $TMPDIR/combined  > $TMPDIR/f1
 
 # Find all unmaintained packages in nixpkgs (f2)
-nix-env -qa --no-name --json --meta --file '<nixpkgs>' 2>/dev/null | jq -r 'map_values(select(.meta.maintainers == null or .meta.maintainers == [])) | .[].pname' | sort -u > $TMPDIR/f2
+nix-env -qa --json --meta --file '<nixpkgs>' 2>/dev/null | jq -r 'map_values(select(.meta.maintainers == null or .meta.maintainers == [])) | .[].pname' | sort -u > $TMPDIR/f2
 
 # Print the intersection of f1 and f2, i.e. all unmaintained packages in the iso image's closure
 comm -12 $TMPDIR/f{1,2}
