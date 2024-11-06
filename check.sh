@@ -37,7 +37,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [[ $BUILD_DEPS -eq 0 && RUNTIME_DEPS -eq 0 ]]; then
+if [[ $BUILD_DEPS -eq 0 && $RUNTIME_DEPS -eq 0 ]]; then
   echo "Can't disable both build-time and run-time dependencies"
   exit 1
 fi
