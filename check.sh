@@ -56,7 +56,11 @@ cleanup() {
 process() {
   while IFS= read -r line; do
     processed_line=$(echo $line | cut -d- -f2- | cut -d. -f1 | sed -E 's/-[0-9]+$//')
-    echo $processed_line
+
+    # Do not print out "internal" packages
+    if [[ ! "$processed_line" =~ -hook ]]; then
+      echo $processed_line
+    fi
   done
 }
 
