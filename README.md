@@ -5,10 +5,12 @@ Checks which packages are unmaintained in the NixOS minimal ISO package for the 
 ## Usage
 
 ```
-./check.sh -h
+./check.sh > report
 ```
 
-This script relies on the value of `<nixpkgs>`, so you can use the `NIX_PATH` variable to set it to a value of your choosing:
+The script prints out what it's doing to stderr, whereas stdout is used only for the final report.
+
+The script relies on the value of `<nixpkgs>`, which you can override:
 
 ```
 NIX_PATH=nixpkgs=/foo/bar/baz ./check.sh
@@ -16,7 +18,7 @@ NIX_PATH=nixpkgs=/foo/bar/baz ./check.sh
 
 If the `--debug` flag is set, the script will keep around the temporary directory where it saves intermediate files, for closer inspection.
 
-The script prints out what it's doing to stderr, whereas stdout is used only for the final output, which you can therefore easily pipe/redirect, as it won't contain any other information.
+More options are available, check them out with `--h`.
 
 ## How it works
 
