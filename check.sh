@@ -17,8 +17,8 @@ while [[ $# -gt 0 ]]; do
   case $1 in
     --debug|-d)
       DEBUG=1
-      echo saving to "$TMPDIR"
-      echo nix_path is "$NIX_PATH"
+      echo saving to "$TMPDIR" >&2
+      echo nix_path is "$NIX_PATH" >&2
       shift;;
     --help|-h)
       usage
