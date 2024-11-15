@@ -38,5 +38,8 @@ Given this and other limitations, the list should only be interpreted as a first
 
 ## TODO
 
-- remove hooks
 - remove wrappers
+- markdown output
+    - per-package report
+        - has `updateScript`
+        - has tests
