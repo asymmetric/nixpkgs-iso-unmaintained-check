@@ -81,11 +81,11 @@ runtime_deps=""
 
 if [[ $BUILD_DEPS -eq 1 ]]; then
   echo "Getting build-time closure..." >&2
-  build_deps=$(nix-store -qR "$drv" | tee "$TMPDIR"/bld-pre | process | sort -u | tee "$TMPDIR"/bld-deps)
+  build_deps=$(nix-store -qR "$drv" | tee "$TMPDIR"/bld-pre | process | sort -u | tee "$TMPDIR"/bld-post)
 fi
 if [[ $RUNTIME_DEPS -eq 1 ]]; then
   echo "Getting run-time closure..." >&2
-  runtime_deps=$(nix-store -qR "$(nix-store -r "${QUIET[@]}" --no-build-output "$drv")" | tee "$TMPDIR"/run-pre | process | sort -u | tee "$TMPDIR"/run-deps )
+  runtime_deps=$(nix-store -qR "$(nix-store -r "${QUIET[@]}" --no-build-output "$drv")" | tee "$TMPDIR"/run-pre | process | sort -u | tee "$TMPDIR"/run-post)
 fi
 
 
