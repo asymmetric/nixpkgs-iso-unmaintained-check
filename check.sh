@@ -9,6 +9,9 @@ DEBUG=0
 BUILD_DEPS=1
 RUNTIME_DEPS=1
 
+# tell Nix to stop printing warnings
+QUIET=(--quiet --quiet --quiet)
+
 usage() {
   echo "Usage: $0 [--debug|-d] [--help|-h] [--no-buildtime] [--no-runtime]"
 }
@@ -70,9 +73,8 @@ process() {
 
 trap "cleanup; exit 1" SIGINT
 
-# need to call --quiet 3 times to stop nix-instantiate from complaining about missing --add-root, smh
 echo "Instantiating store derivation..." >&2
-drv=$(nix-instantiate --quiet --quiet --quiet '<nixpkgs/nixos>' -A config.system.build.isoImage --arg configuration "{ imports = [ <nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix> ]; }")
+drv=$(nix-instantiate "${QUIET[@]}" '<nixpkgs/nixos>' -A config.system.build.isoImage --arg configuration "{ imports = [ <nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix> ]; }")
 
 build_deps=""
 runtime_deps=""
@@ -83,7 +85,7 @@ if [[ $BUILD_DEPS -eq 1 ]]; then
 fi
 if [[ $RUNTIME_DEPS -eq 1 ]]; then
   echo "Getting run-time closure..." >&2
-  runtime_deps=$(nix-store -qR "$(nix-store -r --quiet --quiet --quiet --no-build-output "$drv")" | tee "$TMPDIR"/run-pre | process | sort -u | tee "$TMPDIR"/run-deps )
+  runtime_deps=$(nix-store -qR "$(nix-store -r "${QUIET[@]}" --no-build-output "$drv")" | tee "$TMPDIR"/run-pre | process | sort -u | tee "$TMPDIR"/run-deps )
 fi
 
 
