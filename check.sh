@@ -53,21 +53,24 @@ cleanup() {
   fi
 }
 
-# Try to extract program name from store path.
-# Given something like /nix/store/asdf-foo-123.drv
-# - removes /nix/store/asdf-
-# - removes .drv
-# - removes -123
+# Extracts attribute path from store path.
+#
+# Given something like
+#   /nix/store/yhjs7r0mzh2wlli8r6b8wyc85wyrhipq-python3.12-babel-2.15.0.drv
+# it returns
+#   python3.12-babel-2.15.0
+# Note that we want to preserve the python3.12 part, because it's part of the name/pname of a derivation.
 process() {
   # The `IFS=` ensures word spitting doesn't happen on any character, i.e. that
   # we read a whole line.
   while IFS= read -r line; do
-    processed_line=$(echo "$line" | cut -d- -f2- | cut -d. -f1 | sed -E 's/-[0-9]+$//')
+    # strip .drv, which is only present for build-time deps.
+    processed_line=${line%.drv}
 
-    # Do not print out "internal" packages
-    if [[ ! "$processed_line" =~ -hook ]]; then
-      echo "$processed_line"
-    fi
+    # Remove until end of hash, i.e. first -, included.
+    processed_line=${processed_line#*-}
+
+    echo "$processed_line"
   done
 }
 
@@ -94,10 +97,9 @@ cat <(echo "$build_deps") <(echo "$runtime_deps") | sort -u | tee "$TMPDIR"/deps
 
 # Find all unmaintained packages in nixpkgs (f2)
 echo "Getting list of unmaintained packages..." >&2
-nix-env -qa --json --meta --file '<nixpkgs>' 2>/dev/null | jq -r 'map_values(select(.meta.maintainers == null or .meta.maintainers == [])) | .[].pname' | sort -u > "$TMPDIR"/f2
+nix-env -qa --json --meta --file '<nixpkgs>' 2>/dev/null | jq -r 'map_values(select(.meta.maintainers == null or .meta.maintainers == [])) | .[].name' | sort -u > "$TMPDIR"/f2
 
 # Print the intersection of f1 and f2, i.e. all unmaintained packages in the iso image's closure
-# FIXME: what is babel?
 comm -12 "$TMPDIR"/f{1,2} | tee "$TMPDIR"/pkgs | while read -r pkg; do
   json=$(nix-instantiate --eval --strict ./passthru.nix --argstr pkg "$pkg" --json)
 
