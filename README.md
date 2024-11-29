@@ -43,3 +43,7 @@ Given this and other limitations, the list should only be interpreted as a first
     - per-package report
         - has `updateScript`
         - has tests
+     
+## Acks
+
+Thanks to @phaer for the original idea and feedback throughout.
